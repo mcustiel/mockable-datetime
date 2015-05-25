@@ -57,7 +57,6 @@ function savePersonInfoInDatabase(Person $person)
     PersonDbEntity $person = $this->converter->convert($person, PersonDbEntity::class);
     
     $date = new MockableDateTime();
-    
     $person->setInsertedDate($date->toPhpDateTime());
     
     $this->dbClient->insert($person);
@@ -67,7 +66,7 @@ function savePersonInfoInDatabase(Person $person)
 
 As you can see in the example, I'm not using PHP's \DateTime directly. Instead I have an instance of MockableDateTime and from it I obtain PHP's \DateTime.
 
-Then you have to test this, and assert that insert was called. For the example I'll use PHPUnit.
+Then you have to test this, and assert that insert method was called. For the example I'll use PHPUnit.
 
 ```php
 use Mcustiel\Mockable\DateTimeUtils;
@@ -79,7 +78,9 @@ use Mcustiel\Mockable\DateTimeUtils;
  */
 function shouldCallInsertPersonWithCorrectData()
 {
-    DateTimeUtils::setCurrentTimestampFixed((new \DateTime('2000-01-01 00:00:01'))->getTimestamp());
+    DateTimeUtils::setCurrentTimestampFixed(
+        (new \DateTime('2000-01-01 00:00:01'))->getTimestamp()
+    );
     // Now all instances of MockableDateTime will always return "2000-01-01 00:00:01"
     
     Person $person = new Person('John', 'Doe');
@@ -105,7 +106,7 @@ This method makes all instances of MockableDateTime to always return the date an
 
 ##### void setCurrentTimestampOffset(int $timestamp)
 
-This method makes all instances of MockableDateTime to always return a date and time with offset equal to the specified timestamp. The time starts to run from the moment of the instantiation of MockableDateTime.
+This method makes all instances of MockableDateTime to always return a date and time with offset equal to the specified timestamp. The time starts to run from the moment of the instantiation of MockableDateTime. So if you set an offset equal to '2005-05-05 01:00:00' and sleep for 5 seconds, a new call will return '2005-05-05 01:00:05'.
 
 ##### void setCurrentTimestampSystem()
 
