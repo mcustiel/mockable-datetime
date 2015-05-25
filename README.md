@@ -5,8 +5,8 @@ What is it
 ----------
 
 MockableDateTime is a library written in PHP that allows developers to mock the dates in test environments.
-There are sometimes in which you need to verify an action was executed with certain parameters, and of them is a date or a time (generally obtained with date() or time() built-in functions) and is very difficult to ensure it will have a certain value at the time of that verify execution. 
-MockableDateTime solves this problem by giving the developer a way to obtain PHP's built-in \DateTime class in a way the value it returns can be mocked from unit tests without the need of injecting \DateTime as a dependency.  MockableDateTime was inspired in Joda DateTimeUtils from Java.
+There are sometimes in which you need to verify that an action was executed with certain parameters, and one of them is a date or a time (generally obtained with date() or time() built-in functions) and is very difficult to ensure it will have a certain value at the time of the verification. 
+MockableDateTime solves this problem by giving the developer a way to obtain PHP's built-in \DateTime class in a way the value it returns can be mocked from unit tests without the need of injecting \DateTime as a dependency. MockableDateTime was inspired in Joda DateTimeUtils from Java.
 
 Installation
 ------------
