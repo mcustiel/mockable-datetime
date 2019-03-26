@@ -23,9 +23,14 @@ class DateTimeUtils
     const DATETIME_FIXED = 1;
     const DATETIME_OFFSET = 2;
 
+    /** @var int  */
     private static $type = self::DATETIME_SYSTEM;
+    /** @var int  */
     private static $timestamp = 0;
 
+    /**
+     * @param int $timestamp
+     */
     public static function setCurrentTimestampFixed($timestamp)
     {
         self::$type = self::DATETIME_FIXED;
@@ -38,17 +43,20 @@ class DateTimeUtils
         self::$timestamp = 0;
     }
 
+    /** @param int $timestamp */
     public static function setCurrentTimestampOffset($timestamp)
     {
         self::$type = self::DATETIME_OFFSET;
         self::$timestamp = $timestamp;
     }
 
+    /** @return int */
     public static function getType()
     {
         return self::$type;
     }
 
+    /** @return int */
     public static function getTimestamp()
     {
         return self::$timestamp;
