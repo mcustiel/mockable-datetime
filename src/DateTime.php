@@ -37,7 +37,7 @@ class DateTime
      */
     public function __construct($time = 'now', DateTimeZone $timeZone = null)
     {
-        $this->timeStampAtInstatiation = (new DateTime())->getTimestamp();
+        $this->timeStampAtInstatiation = (new \DateTime())->getTimestamp();
         $this->constructTime = $time;
         $this->constructTimeZone = $timeZone;
         $this->type = DateTimeUtils::getType();
@@ -51,7 +51,7 @@ class DateTime
     public function toPhpDateTime()
     {
         if ($this->type === DateTimeUtils::DATETIME_SYSTEM) {
-            return new DateTime($this->constructTime, $this->constructTimeZone);
+            return new \DateTime($this->constructTime, $this->constructTimeZone);
         }
 
         if ($this->type === DateTimeUtils::DATETIME_FIXED) {
@@ -59,7 +59,7 @@ class DateTime
         }
 
         $date = $this->getFixedTimeFromConfiguredTimestamp();
-        $timePassedSinceInstantiation = abs((new DateTime('now'))->getTimestamp() - $this->timeStampAtInstatiation);
+        $timePassedSinceInstantiation = abs((new \DateTime('now'))->getTimestamp() - $this->timeStampAtInstatiation);
         $date->modify("+{$timePassedSinceInstantiation} seconds");
 
         return $date;
@@ -72,7 +72,7 @@ class DateTime
     private function getFixedTimeFromConfiguredTimestamp()
     {
         $timeStamp = DateTimeUtils::getTimestamp();
-        $date = new DateTime("@{$timeStamp}");
+        $date = new \DateTime("@{$timeStamp}");
         if ($this->constructTime !== 'now') {
             $date->modify($this->constructTime);
         }
