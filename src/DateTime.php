@@ -19,35 +19,66 @@ namespace Mcustiel\Mockable;
 
 class DateTime
 {
+    /** @var int  */
     private $type;
+    /** @var int  */
     private $timestamp;
-
+    /** @var string  */
     private $constructTime;
+    /** @var DateTimeZone|null  */
+    private $constructTimeZone;
+    /** @var int  */
+    private $timeStampAtInstatiation;
 
-    public function __construct()
+    /**
+     * @param string $time
+     * @param DateTimeZone|null $timeZone
+     * @throws \Exception
+     */
+    public function __construct($time = 'now', DateTimeZone $timeZone = null)
     {
-        $this->constructTime = (new \DateTime())->getTimestamp();
+        $this->timeStampAtInstatiation = (new DateTime())->getTimestamp();
+        $this->constructTime = $time;
+        $this->constructTimeZone = $timeZone;
         $this->type = DateTimeUtils::getType();
         $this->timestamp = DateTimeUtils::getTimestamp();
     }
 
+    /**
+     * @return DateTime
+     * @throws \Exception
+     */
     public function toPhpDateTime()
     {
         if ($this->type === DateTimeUtils::DATETIME_SYSTEM) {
-            return new \DateTime('now');
-        } elseif ($this->type === DateTimeUtils::DATETIME_FIXED) {
-            return $this->createPhpDateWithTimestamp($this->timestamp);
+            return new DateTime($this->constructTime, $this->constructTimeZone);
         }
 
-        return $this->createPhpDateWithTimestamp(
-            $this->timestamp + abs(
-                (new \DateTime('now'))->getTimestamp() - $this->constructTime
-            )
-        );
+        if ($this->type === DateTimeUtils::DATETIME_FIXED) {
+            return $this->getFixedTimeFromConfiguredTimestamp();
+        }
+
+        $date = $this->getFixedTimeFromConfiguredTimestamp();
+        $timePassedSinceInstantiation = abs((new DateTime('now'))->getTimestamp() - $this->timeStampAtInstatiation);
+        $date->modify("+{$timePassedSinceInstantiation} seconds");
+
+        return $date;
     }
 
-    private function createPhpDateWithTimestamp($timestamp)
+    /**
+     * @return DateTime
+     * @throws \Exception
+     */
+    private function getFixedTimeFromConfiguredTimestamp()
     {
-        return new \DateTime("@$timestamp");
+        $timeStamp = DateTimeUtils::getTimestamp();
+        $date = new DateTime("@{$timeStamp}");
+        if ($this->constructTime !== 'now') {
+            $date->modify($this->constructTime);
+        }
+        if ($this->constructTimeZone !== null) {
+            $date->setTimezone($this->constructTimeZone);
+        }
+        return $date;
     }
 }
