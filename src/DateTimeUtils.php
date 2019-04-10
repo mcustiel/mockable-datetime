@@ -26,34 +26,38 @@ class DateTimeUtils
 
     /** @var int */
     private static $type = self::DATETIME_SYSTEM;
-    /** @var int */
-    private static $timestamp = 0;
+    /** @var TimeStamp|null */
+    private static $timestamp;
     /** @var int */
     private static $offsetTimestamp = 0;
 
-    /**
-     * @param int $timestamp
-     */
+    /** @param int $timestamp */
     public static function setCurrentTimestampFixed($timestamp)
     {
         self::$type = self::DATETIME_FIXED;
-        self::$timestamp = $timestamp;
+        self::$timestamp = new TimeStamp($timestamp);
     }
 
     public static function setCurrentTimestampSystem()
     {
         self::$type = self::DATETIME_SYSTEM;
-        self::$timestamp = 0;
+        self::$timestamp = new TimeStamp(0);
     }
 
     /** @param int $timestamp */
     public static function setCurrentTimestampOffset($timestamp)
     {
         self::$type = self::DATETIME_OFFSET;
-        self::$timestamp = $timestamp;
+        self::$timestamp = new TimeStamp($timestamp);
         self::$offsetTimestamp = (new \DateTime())->getTimestamp();
     }
 
+    /**
+     * @param string        $time
+     * @param \DateTimeZone $timeZone
+     *
+     * @return \DateTime
+     */
     public static function createPhpDateTime($time = 'now', \DateTimeZone $timeZone = null)
     {
         if (self::DATETIME_SYSTEM === self::$type) {
@@ -79,11 +83,11 @@ class DateTimeUtils
      *
      * @throws \Exception
      *
-     * @return DateTime
+     * @return \DateTime
      */
     private static function getFixedTimeFromConfiguredTimestamp($time, $timeZone = null)
     {
-        $timeStamp = self::$timestamp;
+        $timeStamp = null === self::$timestamp ? 0 : self::$timestamp->asInt();
         $date = new \DateTime("@{$timeStamp}");
         if ('now' !== $time) {
             $date->modify($time);
