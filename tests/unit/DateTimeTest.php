@@ -15,13 +15,13 @@
  * You should have received a copy of the GNU General Public License
  * along with mockable-datetime.  If not, see <http://www.gnu.org/licenses/>.
  */
+namespace Mcustiel\Mockable\Tests;
 
-namespace Unit;
-
-use Mcustiel\Mockable\DateTime;
 use Mcustiel\Mockable\DateTimeUtils;
+use Mcustiel\Mockable\DateTime;
+use PHPUnit\Framework\TestCase;
 
-class DateTimeTest extends \PHPUnit_Framework_TestCase
+class DateTimeTest extends TestCase
 {
     const SLEEP_TIME_IN_SECONDS = 3;
 
@@ -32,11 +32,10 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
     {
         $expected = \DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-01 00:00:01')->getTimestamp();
         DateTimeUtils::setCurrentTimestampFixed($expected);
-        $dateTime = new DateTime();
 
-        $this->assertSame($expected, $dateTime->toPhpDateTime()->getTimestamp());
+        $this->assertEquals($expected, DateTimeUtils::createPhpDateTime()->getTimestamp());
         sleep(self::SLEEP_TIME_IN_SECONDS);
-        $this->assertSame($expected, $dateTime->toPhpDateTime()->getTimestamp());
+        $this->assertEquals($expected, DateTimeUtils::createPhpDateTime()->getTimestamp());
     }
 
     /**
@@ -51,12 +50,11 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
         )->getTimestamp();
         DateTimeUtils::setCurrentTimestampFixed($expected);
 
-        $dateTime = new DateTime();
-        $phpDateTime = $dateTime->toPhpDateTime();
+        $phpDateTime = DateTimeUtils::createPhpDateTime();
 
-        $this->assertSame($expected, $phpDateTime->getTimestamp());
+        $this->assertEquals($expected, $phpDateTime->getTimestamp());
         sleep(self::SLEEP_TIME_IN_SECONDS);
-        $this->assertSame($expected, $phpDateTime->getTimestamp());
+        $this->assertEquals($expected, $phpDateTime->getTimestamp());
     }
 
     /**
@@ -66,13 +64,12 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
     {
         $expected = \DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-01 00:00:01')->getTimestamp();
         DateTimeUtils::setCurrentTimestampOffset($expected);
-        $dateTime = new DateTime();
 
-        $this->assertSame($expected, $dateTime->toPhpDateTime()->getTimestamp());
+        $this->assertEquals($expected, DateTimeUtils::createPhpDateTime()->getTimestamp());
         sleep(self::SLEEP_TIME_IN_SECONDS);
-        $this->assertSame(
+        $this->assertEquals(
             $expected + self::SLEEP_TIME_IN_SECONDS,
-            $dateTime->toPhpDateTime()->getTimestamp()
+            DateTimeUtils::createPhpDateTime()->getTimestamp()
         );
     }
 
@@ -87,13 +84,12 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
             new \DateTimeZone('America/New_York')
         )->getTimestamp();
         DateTimeUtils::setCurrentTimestampOffset($expected);
-        $dateTime = new DateTime();
 
-        $this->assertSame($expected, $dateTime->toPhpDateTime()->getTimestamp());
+        $this->assertEquals($expected, DateTimeUtils::createPhpDateTime()->getTimestamp());
         sleep(self::SLEEP_TIME_IN_SECONDS);
-        $this->assertSame(
+        $this->assertEquals(
             $expected + self::SLEEP_TIME_IN_SECONDS,
-            $dateTime->toPhpDateTime()->getTimestamp()
+            DateTimeUtils::createPhpDateTime()->getTimestamp()
         );
     }
 
@@ -103,16 +99,15 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
     public function shouldReturnSystemTimeEveryTimeIsCalled()
     {
         DateTimeUtils::setCurrentTimestampSystem();
-        $dateTime = new DateTime();
 
-        $this->assertSame(
+        $this->assertEquals(
             (new \DateTime())->getTimestamp(),
-            $dateTime->toPhpDateTime()->getTimestamp()
+            DateTimeUtils::createPhpDateTime()->getTimestamp()
         );
         sleep(self::SLEEP_TIME_IN_SECONDS);
-        $this->assertSame(
+        $this->assertEquals(
             (new \DateTime())->getTimestamp(),
-            $dateTime->toPhpDateTime()->getTimestamp()
+            DateTimeUtils::createPhpDateTime()->getTimestamp()
         );
     }
 }

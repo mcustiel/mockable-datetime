@@ -28,6 +28,8 @@ class DateTimeUtils
     private static $type = self::DATETIME_SYSTEM;
     /** @var int */
     private static $timestamp = 0;
+    /** @var int */
+    private static $offsetTimestamp = 0;
 
     /**
      * @param int $timestamp
@@ -49,17 +51,42 @@ class DateTimeUtils
     {
         self::$type = self::DATETIME_OFFSET;
         self::$timestamp = $timestamp;
+        self::$offsetTimestamp = (new \DateTime())->getTimestamp();
     }
 
-    /** @return int */
-    public static function getType()
+    public static function createPhpDateTime($time = 'now', \DateTimeZone $timeZone = null)
     {
-        return self::$type;
+        if (self::$type === DateTimeUtils::DATETIME_SYSTEM) {
+            return new \DateTime($time, $timeZone);
+        }
+
+        if (self::$type === DateTimeUtils::DATETIME_FIXED) {
+            return self::getFixedTimeFromConfiguredTimestamp($time, $timeZone);
+        }
+
+        $date = self::getFixedTimeFromConfiguredTimestamp($time, $timeZone);
+        $timePassedSinceInstantiation = abs(
+            (new \DateTime())->getTimestamp() - self::$offsetTimestamp
+        );
+        $date->modify("+{$timePassedSinceInstantiation} seconds");
+
+        return $date;
     }
 
-    /** @return int */
-    public static function getTimestamp()
+    /**
+     * @return DateTime
+     * @throws \Exception
+     */
+    private static function getFixedTimeFromConfiguredTimestamp($time, $timeZone = null)
     {
-        return self::$timestamp;
+        $timeStamp = self::$timestamp;
+        $date = new \DateTime("@{$timeStamp}");
+        if ($time !== 'now') {
+            $date->modify($time);
+        }
+        if ($timeZone !== null) {
+            $date->setTimezone($timeZone);
+        }
+        return $date;
     }
 }

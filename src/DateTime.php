@@ -15,26 +15,22 @@
  * You should have received a copy of the GNU General Public License
  * along with mockable-datetime.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 namespace Mcustiel\Mockable;
 
 class DateTime
 {
-    /** @var int */
+    /** @var int  */
     private $type;
-    /** @var int */
-    private $timestamp;
-    /** @var string */
+    /** @var string  */
     private $constructTime;
-    /** @var \DateTimeZone|null */
+    /** @var \DateTimeZone|null  */
     private $constructTimeZone;
-    /** @var int */
+    /** @var int  */
     private $timeStampAtInstatiation;
 
     /**
-     * @param string             $time
+     * @param string $time
      * @param \DateTimeZone|null $timeZone
-     *
      * @throws \Exception
      */
     public function __construct($time = 'now', \DateTimeZone $timeZone = null)
@@ -43,21 +39,19 @@ class DateTime
         $this->constructTime = $time;
         $this->constructTimeZone = $timeZone;
         $this->type = DateTimeUtils::getType();
-        $this->timestamp = DateTimeUtils::getTimestamp();
     }
 
     /**
-     * @throws \Exception
-     *
      * @return DateTime
+     * @throws \Exception
      */
     public function toPhpDateTime()
     {
-        if (DateTimeUtils::DATETIME_SYSTEM === $this->type) {
+        if ($this->type === DateTimeUtils::DATETIME_SYSTEM) {
             return new \DateTime($this->constructTime, $this->constructTimeZone);
         }
 
-        if (DateTimeUtils::DATETIME_FIXED === $this->type) {
+        if ($this->type === DateTimeUtils::DATETIME_FIXED) {
             return $this->getFixedTimeFromConfiguredTimestamp();
         }
 
@@ -69,21 +63,19 @@ class DateTime
     }
 
     /**
-     * @throws \Exception
-     *
      * @return DateTime
+     * @throws \Exception
      */
     private function getFixedTimeFromConfiguredTimestamp()
     {
         $timeStamp = DateTimeUtils::getTimestamp();
         $date = new \DateTime("@{$timeStamp}");
-        if ('now' !== $this->constructTime) {
+        if ($this->constructTime !== 'now') {
             $date->modify($this->constructTime);
         }
-        if (null !== $this->constructTimeZone) {
+        if ($this->constructTimeZone !== null) {
             $date->setTimezone($this->constructTimeZone);
         }
-
         return $date;
     }
 }
