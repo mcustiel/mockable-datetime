@@ -91,3 +91,11 @@ This method makes all instances of Mockable DateTime to always return a date and
 ##### void setSystem()
 
 This method makes all instances of Mockable DateTime to always return current system time (default behaviour).
+
+##### \DateTime newPhpDateTime($time = 'now', \DateTimeZone $timeZone = null)
+
+Creates a new instance of PHP's \DateTime class based in the config of Mockable DateTime.
+
+##### \DateTimeImmutable newImmutablePhpDateTime($time = 'now', \DateTimeZone $timeZone = null)
+
+Creates a new instance of PHP's \DateTimeImmutable class based in the config of Mockable DateTime.
