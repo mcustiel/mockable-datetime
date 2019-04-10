@@ -90,16 +90,15 @@ class DateTime
         }
 
         if (self::DATETIME_FIXED === self::$type) {
-            return self::getFixedTimeFromConfiguredTimestamp($time, $timeZone);
+            return self::getFixedImmutableTimeFromConfiguredTimestamp($time, $timeZone);
         }
 
-        $date = self::getFixedTimeFromConfiguredTimestamp($time, $timeZone);
+        $date = self::getFixedImmutableTimeFromConfiguredTimestamp($time, $timeZone);
         $timePassedSinceInstantiation = abs(
-            (new \DateTimeImmutable())->getTimestamp() - self::$offsetTimestamp
-            );
-        $date->modify("+{$timePassedSinceInstantiation} seconds");
+            (new \DateTime())->getTimestamp() - self::$offsetTimestamp
+        );
 
-        return $date;
+        return $date->modify("+{$timePassedSinceInstantiation} seconds");
     }
 
     /**
