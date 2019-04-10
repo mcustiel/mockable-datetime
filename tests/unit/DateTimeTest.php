@@ -15,10 +15,11 @@
  * You should have received a copy of the GNU General Public License
  * along with mockable-datetime.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 namespace Unit;
 
-use Mcustiel\Mockable\DateTimeUtils;
 use Mcustiel\Mockable\DateTime;
+use Mcustiel\Mockable\DateTimeUtils;
 
 class DateTimeTest extends \PHPUnit_Framework_TestCase
 {
@@ -33,9 +34,9 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
         DateTimeUtils::setCurrentTimestampFixed($expected);
         $dateTime = new DateTime();
 
-        $this->assertEquals($expected, $dateTime->toPhpDateTime()->getTimestamp());
+        $this->assertSame($expected, $dateTime->toPhpDateTime()->getTimestamp());
         sleep(self::SLEEP_TIME_IN_SECONDS);
-        $this->assertEquals($expected, $dateTime->toPhpDateTime()->getTimestamp());
+        $this->assertSame($expected, $dateTime->toPhpDateTime()->getTimestamp());
     }
 
     /**
@@ -53,9 +54,9 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
         $dateTime = new DateTime();
         $phpDateTime = $dateTime->toPhpDateTime();
 
-        $this->assertEquals($expected, $phpDateTime->getTimestamp());
+        $this->assertSame($expected, $phpDateTime->getTimestamp());
         sleep(self::SLEEP_TIME_IN_SECONDS);
-        $this->assertEquals($expected, $phpDateTime->getTimestamp());
+        $this->assertSame($expected, $phpDateTime->getTimestamp());
     }
 
     /**
@@ -67,9 +68,9 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
         DateTimeUtils::setCurrentTimestampOffset($expected);
         $dateTime = new DateTime();
 
-        $this->assertEquals($expected, $dateTime->toPhpDateTime()->getTimestamp());
+        $this->assertSame($expected, $dateTime->toPhpDateTime()->getTimestamp());
         sleep(self::SLEEP_TIME_IN_SECONDS);
-        $this->assertEquals(
+        $this->assertSame(
             $expected + self::SLEEP_TIME_IN_SECONDS,
             $dateTime->toPhpDateTime()->getTimestamp()
         );
@@ -88,9 +89,9 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
         DateTimeUtils::setCurrentTimestampOffset($expected);
         $dateTime = new DateTime();
 
-        $this->assertEquals($expected, $dateTime->toPhpDateTime()->getTimestamp());
+        $this->assertSame($expected, $dateTime->toPhpDateTime()->getTimestamp());
         sleep(self::SLEEP_TIME_IN_SECONDS);
-        $this->assertEquals(
+        $this->assertSame(
             $expected + self::SLEEP_TIME_IN_SECONDS,
             $dateTime->toPhpDateTime()->getTimestamp()
         );
@@ -104,12 +105,12 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
         DateTimeUtils::setCurrentTimestampSystem();
         $dateTime = new DateTime();
 
-        $this->assertEquals(
+        $this->assertSame(
             (new \DateTime())->getTimestamp(),
             $dateTime->toPhpDateTime()->getTimestamp()
         );
         sleep(self::SLEEP_TIME_IN_SECONDS);
-        $this->assertEquals(
+        $this->assertSame(
             (new \DateTime())->getTimestamp(),
             $dateTime->toPhpDateTime()->getTimestamp()
         );

@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with mockable-datetime.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 namespace Mcustiel\Mockable;
 
 class DateTimeUtils
@@ -23,9 +24,9 @@ class DateTimeUtils
     const DATETIME_FIXED = 1;
     const DATETIME_OFFSET = 2;
 
-    /** @var int  */
+    /** @var int */
     private static $type = self::DATETIME_SYSTEM;
-    /** @var int  */
+    /** @var int */
     private static $timestamp = 0;
 
     /**
