@@ -23,8 +23,6 @@ This project is published in packagist, so you just need to add it as a dependen
 }
 ```
 
-Or just download the release and include it in your path.
-
 How to use it?
 --------------
 
