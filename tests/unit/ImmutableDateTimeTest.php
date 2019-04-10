@@ -21,7 +21,7 @@ namespace Mcustiel\Mockable\Tests;
 use Mcustiel\Mockable\DateTime;
 use PHPUnit\Framework\TestCase;
 
-class DateTimeTest extends TestCase
+class ImmutableDateTimeTest extends TestCase
 {
     const SLEEP_TIME_IN_SECONDS = 3;
 
@@ -31,9 +31,9 @@ class DateTimeTest extends TestCase
         $expected = \DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-01 00:00:01');
         DateTime::setFixed($expected);
 
-        $this->assertSame($expected->getTimestamp(), DateTime::newPhpDateTime()->getTimestamp());
+        $this->assertSame($expected->getTimestamp(), DateTime::newImmutablePhpDateTime()->getTimestamp());
         sleep(self::SLEEP_TIME_IN_SECONDS);
-        $this->assertSame($expected->getTimestamp(), DateTime::newPhpDateTime()->getTimestamp());
+        $this->assertSame($expected->getTimestamp(), DateTime::newImmutablePhpDateTime()->getTimestamp());
     }
 
     /** @test */
@@ -46,7 +46,7 @@ class DateTimeTest extends TestCase
         );
         DateTime::setFixed($expected);
 
-        $phpDateTime = DateTime::newPhpDateTime();
+        $phpDateTime = DateTime::newImmutablePhpDateTime();
 
         $this->assertSame($expected->getTimestamp(), $phpDateTime->getTimestamp());
         sleep(self::SLEEP_TIME_IN_SECONDS);
@@ -59,11 +59,11 @@ class DateTimeTest extends TestCase
         $expected = \DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-01 00:00:01');
         DateTime::setOffset($expected);
 
-        $this->assertSame($expected->getTimestamp(), DateTime::newPhpDateTime()->getTimestamp());
+        $this->assertSame($expected->getTimestamp(), DateTime::newImmutablePhpDateTime()->getTimestamp());
         sleep(self::SLEEP_TIME_IN_SECONDS);
         $this->assertSame(
             $expected->getTimestamp() + self::SLEEP_TIME_IN_SECONDS,
-            DateTime::newPhpDateTime()->getTimestamp()
+            DateTime::newImmutablePhpDateTime()->getTimestamp()
         );
     }
 
@@ -77,11 +77,11 @@ class DateTimeTest extends TestCase
         );
         DateTime::setOffset($expected);
 
-        $this->assertSame($expected->getTimestamp(), DateTime::newPhpDateTime()->getTimestamp());
+        $this->assertSame($expected->getTimestamp(), DateTime::newImmutablePhpDateTime()->getTimestamp());
         sleep(self::SLEEP_TIME_IN_SECONDS);
         $this->assertSame(
             $expected->getTimestamp() + self::SLEEP_TIME_IN_SECONDS,
-            DateTime::newPhpDateTime()->getTimestamp()
+            DateTime::newImmutablePhpDateTime()->getTimestamp()
         );
     }
 
@@ -92,12 +92,12 @@ class DateTimeTest extends TestCase
 
         $this->assertSame(
             (new \DateTime())->getTimestamp(),
-            DateTime::newPhpDateTime()->getTimestamp()
+            DateTime::newImmutablePhpDateTime()->getTimestamp()
         );
         sleep(self::SLEEP_TIME_IN_SECONDS);
         $this->assertSame(
             (new \DateTime())->getTimestamp(),
-            DateTime::newPhpDateTime()->getTimestamp()
+            DateTime::newImmutablePhpDateTime()->getTimestamp()
         );
     }
 }

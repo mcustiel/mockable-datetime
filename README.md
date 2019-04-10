@@ -39,8 +39,7 @@ function savePersonInfoInDatabase(Person $person)
 {
     PersonDbEntity $person = $this->converter->convert($person, PersonDbEntity::class);
     
-    $date = new Mockable DateTime();
-    $person->setInsertedDate(DateTime::newPhpDateTime());
+    $person->setInsertedDate(DateTime::newPhpDateTime()); // DateTime::newImmutablePhpDateTime() can also be used
     
     $this->dbClient->insert($person);
 }
@@ -61,10 +60,8 @@ use Mcustiel\Mockable\DateTime;
  */
 function shouldCallInsertPersonWithCorrectData()
 {
-    DateTime::setCurrentTimestampFixed(
-        (new \DateTime('2000-01-01 00:00:01'))->getTimestamp()
-    );
-    // Now all instances of Mockable DateTime will always return "2000-01-01 00:00:01"
+    DateTime::setFixed(new \DateTime('2000-01-01 00:00:01'));
+    // Now every call to MockableDateTime::newPhpDateTime() will always return "2000-01-01 00:00:01"
     
     Person $person = new Person('John', 'Doe');
     PersonDbEntity $expected = new PersonDbEntity('John', 'Doe');
@@ -83,14 +80,14 @@ That's it. For it to work the code and tests should be executed in the same envi
 
 ### DateTime methods:
 
-##### void setCurrentTimestampFixed(int $timestamp)
+##### void setFixed(\DateTime $dateTime)
 
-This method makes all instances of Mockable DateTime to always return the date and time specified by the timestamp.
+This method makes all instances of Mockable DateTime to always return the date and time specified by the $dateTime parameter.
 
-##### void setCurrentTimestampOffset(int $timestamp)
+##### void setOffset(\DateTime $dateTime)
 
-This method makes all instances of Mockable DateTime to always return a date and time with offset equal to the specified timestamp. The time starts to run from the moment of the instantiation of Mockable DateTime. So if you set an offset equal to '2005-05-05 01:00:00' and sleep for 5 seconds, a new call will return '2005-05-05 01:00:05'.
+This method makes all instances of Mockable DateTime to always return a date and time with offset equal to the specified by the $dateTime parameter. The time starts to run from the moment of the call to this method. So if you set an offset equal to '2005-05-05 01:00:00' and sleep for 5 seconds, a new call to create a \DateTime will return one with '2005-05-05 01:00:05' set.
 
-##### void setCurrentTimestampSystem()
+##### void setSystem()
 
 This method makes all instances of Mockable DateTime to always return current system time (default behaviour).

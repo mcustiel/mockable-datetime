@@ -26,29 +26,29 @@ class DateTime
 
     /** @var int */
     private static $type = self::DATETIME_SYSTEM;
-    /** @var TimeStamp|null */
-    private static $timestamp;
+    /** @var int */
+    private static $timestamp = 0;
     /** @var int */
     private static $offsetTimestamp = 0;
 
     /** @param int $timestamp */
-    public static function setCurrentTimestampFixed($timestamp)
+    public static function setFixed(\DateTime $dateTime)
     {
         self::$type = self::DATETIME_FIXED;
-        self::$timestamp = new TimeStamp($timestamp);
+        self::$timestamp = $dateTime->getTimestamp();
     }
 
-    public static function setCurrentTimestampSystem()
+    public static function setSystem()
     {
         self::$type = self::DATETIME_SYSTEM;
-        self::$timestamp = new TimeStamp(0);
+        self::$timestamp = 0;
     }
 
     /** @param int $timestamp */
-    public static function setCurrentTimestampOffset($timestamp)
+    public static function setOffset(\DateTime $dateTime)
     {
         self::$type = self::DATETIME_OFFSET;
-        self::$timestamp = new TimeStamp($timestamp);
+        self::$timestamp = $dateTime->getTimestamp();
         self::$offsetTimestamp = (new \DateTime())->getTimestamp();
     }
 
@@ -78,6 +78,31 @@ class DateTime
     }
 
     /**
+     * @param string        $time
+     * @param \DateTimeZone $timeZone
+     *
+     * @return \DateTime
+     */
+    public static function newImmutablePhpDateTime($time = 'now', \DateTimeZone $timeZone = null)
+    {
+        if (self::DATETIME_SYSTEM === self::$type) {
+            return new \DateTimeImmutable($time, $timeZone);
+        }
+
+        if (self::DATETIME_FIXED === self::$type) {
+            return self::getFixedTimeFromConfiguredTimestamp($time, $timeZone);
+        }
+
+        $date = self::getFixedTimeFromConfiguredTimestamp($time, $timeZone);
+        $timePassedSinceInstantiation = abs(
+            (new \DateTimeImmutable())->getTimestamp() - self::$offsetTimestamp
+            );
+        $date->modify("+{$timePassedSinceInstantiation} seconds");
+
+        return $date;
+    }
+
+    /**
      * @param mixed      $time
      * @param null|mixed $timeZone
      *
@@ -87,13 +112,33 @@ class DateTime
      */
     private static function getFixedTimeFromConfiguredTimestamp($time, $timeZone = null)
     {
-        $timeStamp = null === self::$timestamp ? 0 : self::$timestamp->asInt();
-        $date = new \DateTime("@{$timeStamp}");
+        $date = new \DateTime(sprintf('@%d', self::$timestamp));
         if ('now' !== $time) {
             $date->modify($time);
         }
         if (null !== $timeZone) {
             $date->setTimezone($timeZone);
+        }
+
+        return $date;
+    }
+
+    /**
+     * @param mixed      $time
+     * @param null|mixed $timeZone
+     *
+     * @throws \Exception
+     *
+     * @return \DateTime
+     */
+    private static function getFixedImmutableTimeFromConfiguredTimestamp($time, $timeZone = null)
+    {
+        $date = new \DateTimeImmutable(sprintf('@%d', self::$timestamp));
+        if ('now' !== $time) {
+            $date = $date->modify($time);
+        }
+        if (null !== $timeZone) {
+            $date = $date->setTimezone($timeZone);
         }
 
         return $date;
