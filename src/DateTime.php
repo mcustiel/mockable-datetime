@@ -18,7 +18,7 @@
 
 namespace Mcustiel\Mockable;
 
-class DateTimeUtils
+class DateTime
 {
     const DATETIME_SYSTEM = 0;
     const DATETIME_FIXED = 1;
@@ -58,7 +58,7 @@ class DateTimeUtils
      *
      * @return \DateTime
      */
-    public static function createPhpDateTime($time = 'now', \DateTimeZone $timeZone = null)
+    public static function newPhpDateTime($time = 'now', \DateTimeZone $timeZone = null)
     {
         if (self::DATETIME_SYSTEM === self::$type) {
             return new \DateTime($time, $timeZone);

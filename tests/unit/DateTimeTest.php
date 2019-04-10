@@ -18,7 +18,7 @@
 
 namespace Mcustiel\Mockable\Tests;
 
-use Mcustiel\Mockable\DateTimeUtils;
+use Mcustiel\Mockable\DateTime;
 use PHPUnit\Framework\TestCase;
 
 class DateTimeTest extends TestCase
@@ -31,11 +31,11 @@ class DateTimeTest extends TestCase
     public function shouldReturnAFixedTimeEveryTimeItIsCalled()
     {
         $expected = \DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-01 00:00:01')->getTimestamp();
-        DateTimeUtils::setCurrentTimestampFixed($expected);
+        DateTime::setCurrentTimestampFixed($expected);
 
-        $this->assertSame($expected, DateTimeUtils::createPhpDateTime()->getTimestamp());
+        $this->assertSame($expected, DateTime::newPhpDateTime()->getTimestamp());
         sleep(self::SLEEP_TIME_IN_SECONDS);
-        $this->assertSame($expected, DateTimeUtils::createPhpDateTime()->getTimestamp());
+        $this->assertSame($expected, DateTime::newPhpDateTime()->getTimestamp());
     }
 
     /**
@@ -48,9 +48,9 @@ class DateTimeTest extends TestCase
             '2000-01-01 00:00:01',
             new \DateTimeZone('America/New_York')
         )->getTimestamp();
-        DateTimeUtils::setCurrentTimestampFixed($expected);
+        DateTime::setCurrentTimestampFixed($expected);
 
-        $phpDateTime = DateTimeUtils::createPhpDateTime();
+        $phpDateTime = DateTime::newPhpDateTime();
 
         $this->assertSame($expected, $phpDateTime->getTimestamp());
         sleep(self::SLEEP_TIME_IN_SECONDS);
@@ -63,13 +63,13 @@ class DateTimeTest extends TestCase
     public function shouldReturnTimeBasedInAnOffsetEveryTimeIsCalled()
     {
         $expected = \DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-01 00:00:01')->getTimestamp();
-        DateTimeUtils::setCurrentTimestampOffset($expected);
+        DateTime::setCurrentTimestampOffset($expected);
 
-        $this->assertSame($expected, DateTimeUtils::createPhpDateTime()->getTimestamp());
+        $this->assertSame($expected, DateTime::newPhpDateTime()->getTimestamp());
         sleep(self::SLEEP_TIME_IN_SECONDS);
         $this->assertSame(
             $expected + self::SLEEP_TIME_IN_SECONDS,
-            DateTimeUtils::createPhpDateTime()->getTimestamp()
+            DateTime::newPhpDateTime()->getTimestamp()
         );
     }
 
@@ -83,13 +83,13 @@ class DateTimeTest extends TestCase
             '2000-01-01 00:00:01',
             new \DateTimeZone('America/New_York')
         )->getTimestamp();
-        DateTimeUtils::setCurrentTimestampOffset($expected);
+        DateTime::setCurrentTimestampOffset($expected);
 
-        $this->assertSame($expected, DateTimeUtils::createPhpDateTime()->getTimestamp());
+        $this->assertSame($expected, DateTime::newPhpDateTime()->getTimestamp());
         sleep(self::SLEEP_TIME_IN_SECONDS);
         $this->assertSame(
             $expected + self::SLEEP_TIME_IN_SECONDS,
-            DateTimeUtils::createPhpDateTime()->getTimestamp()
+            DateTime::newPhpDateTime()->getTimestamp()
         );
     }
 
@@ -98,16 +98,16 @@ class DateTimeTest extends TestCase
      */
     public function shouldReturnSystemTimeEveryTimeIsCalled()
     {
-        DateTimeUtils::setCurrentTimestampSystem();
+        DateTime::setCurrentTimestampSystem();
 
         $this->assertSame(
             (new \DateTime())->getTimestamp(),
-            DateTimeUtils::createPhpDateTime()->getTimestamp()
+            DateTime::newPhpDateTime()->getTimestamp()
         );
         sleep(self::SLEEP_TIME_IN_SECONDS);
         $this->assertSame(
             (new \DateTime())->getTimestamp(),
-            DateTimeUtils::createPhpDateTime()->getTimestamp()
+            DateTime::newPhpDateTime()->getTimestamp()
         );
     }
 }
