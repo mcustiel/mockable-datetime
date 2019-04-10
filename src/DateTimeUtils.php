@@ -56,11 +56,11 @@ class DateTimeUtils
 
     public static function createPhpDateTime($time = 'now', \DateTimeZone $timeZone = null)
     {
-        if (self::$type === DateTimeUtils::DATETIME_SYSTEM) {
+        if (self::DATETIME_SYSTEM === self::$type) {
             return new \DateTime($time, $timeZone);
         }
 
-        if (self::$type === DateTimeUtils::DATETIME_FIXED) {
+        if (self::DATETIME_FIXED === self::$type) {
             return self::getFixedTimeFromConfiguredTimestamp($time, $timeZone);
         }
 
@@ -74,19 +74,24 @@ class DateTimeUtils
     }
 
     /**
-     * @return DateTime
+     * @param mixed      $time
+     * @param null|mixed $timeZone
+     *
      * @throws \Exception
+     *
+     * @return DateTime
      */
     private static function getFixedTimeFromConfiguredTimestamp($time, $timeZone = null)
     {
         $timeStamp = self::$timestamp;
         $date = new \DateTime("@{$timeStamp}");
-        if ($time !== 'now') {
+        if ('now' !== $time) {
             $date->modify($time);
         }
-        if ($timeZone !== null) {
+        if (null !== $timeZone) {
             $date->setTimezone($timeZone);
         }
+
         return $date;
     }
 }
