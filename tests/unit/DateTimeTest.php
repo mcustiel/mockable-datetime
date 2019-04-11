@@ -25,6 +25,11 @@ class DateTimeTest extends TestCase
 {
     const SLEEP_TIME_IN_SECONDS = 3;
 
+    public function tearDown()
+    {
+        DateTIme::setSystem();
+    }
+
     /** @test */
     public function shouldReturnAFixedTimeEveryTimeItIsCalled()
     {
@@ -51,6 +56,19 @@ class DateTimeTest extends TestCase
         $this->assertSame($expected->getTimestamp(), $phpDateTime->getTimestamp());
         sleep(self::SLEEP_TIME_IN_SECONDS);
         $this->assertSame($expected->getTimestamp(), $phpDateTime->getTimestamp());
+    }
+
+    /** @test */
+    public function shouldWorkWithDatesRelativeToAFixedOne()
+    {
+        $expected = \DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-01 00:00:01');
+        DateTime::setFixed($expected);
+        $expected->modify('-1 day');
+
+        $this->assertSame(
+            $expected->getTimestamp(),
+            DateTime::newPhpDateTime('-1 day')->getTimestamp()
+            );
     }
 
     /** @test */
@@ -86,6 +104,19 @@ class DateTimeTest extends TestCase
     }
 
     /** @test */
+    public function shouldWorkWithDatesRelativeToAnOffset()
+    {
+        /** @var \DateTime $expected */
+        $expected = \DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-01 00:00:01');
+        DateTime::setOffset($expected);
+        $expected->modify('-1 day');
+        $this->assertSame(
+            $expected->getTimestamp(),
+            DateTime::newPhpDateTime('-1 day')->getTimestamp()
+        );
+    }
+
+    /** @test */
     public function shouldReturnSystemTimeEveryTimeIsCalled()
     {
         DateTime::setSystem();
@@ -98,6 +129,44 @@ class DateTimeTest extends TestCase
         $this->assertSame(
             (new \DateTime())->getTimestamp(),
             DateTime::newPhpDateTime()->getTimestamp()
+        );
+    }
+
+    /** @test */
+    public function shouldWorkWithDatesRelativeToSystemTime()
+    {
+        DateTime::setSystem();
+
+        $this->assertSame(
+            (new \DateTime('-1 day'))->getTimestamp(),
+            DateTime::newPhpDateTime('-1 day')->getTimestamp()
+        );
+    }
+
+    /** @test */
+    public function shouldReturnFixedDateIndependentOfTheSetup()
+    {
+        /** @var \DateTime $expected */
+        $expected = \DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-01 00:00:01');
+        DateTime::setSystem();
+
+        $this->assertSame(
+            $expected->getTimestamp(),
+            DateTime::newPhpDateTime('2000-01-01 00:00:01')->getTimestamp()
+        );
+
+        DateTime::setFixed(\DateTime::createFromFormat('Y-m-d H:i:s', '1994-04-08 10:30:07'));
+
+        $this->assertSame(
+            $expected->getTimestamp(),
+            DateTime::newPhpDateTime('2000-01-01 00:00:01')->getTimestamp()
+        );
+
+        DateTime::setOffset(\DateTime::createFromFormat('Y-m-d H:i:s', '1994-04-08 10:30:07'));
+
+        $this->assertSame(
+            $expected->getTimestamp(),
+            DateTime::newPhpDateTime('2000-01-01 00:00:01')->getTimestamp()
         );
     }
 }

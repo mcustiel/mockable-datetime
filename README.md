@@ -4,16 +4,14 @@ Mockable DateTime
 What is it
 ----------
 
-Mockable DateTime is a library written in PHP that allows developers to mock the dates in test environments.
+Mockable DateTime is a library written in PHP that allows developers to mock the dates for unit tests.
 There are sometimes in which you need to verify that an action was executed with certain parameters, and one of them is a date or a time (generally obtained with date() or time() built-in functions) and is very difficult to ensure it will have a certain value at the time of the verification. 
-Mockable DateTime solves this problem by giving the developer a way to obtain PHP's built-in \DateTime class in a way the value it returns can be mocked from unit tests without the need of injecting \DateTime as a dependency. Mockable DateTime was inspired in Joda DateTimeUtils from Java.
+Mockable DateTime solves this problem by giving the developer a way to obtain PHP's built-in DateTime class in a way, that the value it returns can be mocked from unit tests without the need of injecting DateTime as a dependency.
 
 Installation
 ------------
 
 #### Composer:
-
-This project is published in packagist, so you just need to add it as a dependency in your composer.json:
 
 ```json  
 {
@@ -37,18 +35,37 @@ use Mcustiel\Mockable\DateTime;
 // ...
 function savePersonInfoInDatabase(Person $person)
 {
-    PersonDbEntity $person = $this->converter->convert($person, PersonDbEntity::class);
-    
-    $person->setInsertedDate(DateTime::newPhpDateTime()); // DateTime::newImmutablePhpDateTime() can also be used
-    
+    /** @var PersonDbEntity $person */
+    $person = $this->converter->convert($person, PersonDbEntity::class);
+    $person->setCreatedAt(DateTime::newPhpDateTime()); // DateTime::newImmutablePhpDateTime() can also be used
     $this->dbClient->insert($person);
 }
 // ...
 ```
 
-As you can see in the example, I'm not using PHP's \DateTime directly. Instead I have an instance of Mockable DateTime and from it I obtain PHP's \DateTime.
+Also arguments can be passed to create the DateTime object:
 
-Then you have to test this, and assert that insert method was called. For the example I'll use PHPUnit.
+```php
+
+use Mcustiel\Mockable\DateTime;
+
+// ...
+function savePersonInfoInDatabase(Person $person)
+{
+    /** @var PersonDbEntity $person */
+    $person = $this->converter->convert($person, PersonDbEntity::class);
+    $person->setCreatedAt(DateTime::newPhpDateTime(
+        '-4 months', 
+        new \DateTimeZone('America/New_York')
+    )); // DateTime::newImmutablePhpDateTime() can also be used
+    $this->dbClient->insert($person);
+}
+// ...
+```
+
+As you can see in the example, I'm not using PHP's \DateTime directly. Instead I use Mockable DateTime to create instances of PHP's \DateTime.
+
+Then you have to test this, and assert that insert method was called with some specific date as an argument. For the example I'll use PHPUnit.
 
 ```php
 use Mcustiel\Mockable\DateTime;
@@ -62,15 +79,16 @@ function shouldCallInsertPersonWithCorrectData()
 {
     DateTime::setFixed(new \DateTime('2000-01-01 00:00:01'));
     // Now every call to MockableDateTime::newPhpDateTime() will always return "2000-01-01 00:00:01"
-    
-    Person $person = new Person('John', 'Doe');
-    PersonDbEntity $expected = new PersonDbEntity('John', 'Doe');
-    $expected->setInsertedDate(new \DateTime('2000-01-01 00:00:01'));    
+    /** @var Person $person */
+    $person = new Person('John', 'Doe');
+    /** @var PersonDbEntity $expected */
+    $expected = new PersonDbEntity('John', 'Doe');
+    $expected->setCreatedAt(new \DateTime('2000-01-01 00:00:01'));    
     
     $this->dbClientMock->expects($this->once())
         ->method('insert')
         ->with($this->equalTo($expected));
-    
+    // ...and other needed mocks
     $this->unitUnderTest->savePersonInfoInDatabase($person);
 }
 // ...
