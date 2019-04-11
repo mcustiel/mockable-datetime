@@ -72,6 +72,43 @@ class ImmutableDateTimeTest extends TestCase
     }
 
     /** @test */
+    public function shouldReturnFixedDateTimeUsingTimeZone()
+    {
+        /** @var \DateTime $expected */
+        $expected = new \DateTime(
+            '2000-01-02 03:04:03',
+            new \DateTimeZone('America/Montevideo')
+            );
+        DateTime::setFixed($expected);
+        sleep(self::SLEEP_TIME_IN_SECONDS);
+        $this->assertSame(
+            $expected->getTimestamp(),
+            DateTime::newImmutablePhpDateTime(
+                'now',
+                new \DateTimeZone('America/Montevideo')
+            )->getTimestamp()
+        );
+    }
+
+    /** @test */
+    public function shouldReturnSystemDateTimeUsingTimeZone()
+    {
+        /** @var \DateTime $expected */
+        $expected = new \DateTime(
+            'now',
+            new \DateTimeZone('America/Montevideo')
+        );
+        DateTime::setSystem();
+        $this->assertSame(
+            $expected->getTimestamp(),
+            DateTime::newImmutablePhpDateTime(
+                'now',
+                new \DateTimeZone('America/Montevideo')
+            )->getTimestamp()
+        );
+    }
+
+    /** @test */
     public function shouldReturnTimeBasedInAnOffsetEveryTimeIsCalled()
     {
         $expected = \DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-01 00:00:01');
@@ -113,6 +150,28 @@ class ImmutableDateTimeTest extends TestCase
         $this->assertSame(
             $expected->getTimestamp(),
             DateTime::newImmutablePhpDateTime('-1 day')->getTimestamp()
+        );
+    }
+
+    /** @test */
+    public function shouldReturnDateTimeWithOffsetUsingTimeZone()
+    {
+        /** @var \DateTime $expected */
+        $expected = new \DateTime(
+            '2000-01-02 03:04:03',
+            new \DateTimeZone('America/Montevideo')
+        );
+        DateTime::setOffset(new \DateTime(
+            '2000-01-02 03:04:00',
+            new \DateTimeZone('America/Montevideo')
+        ));
+        sleep(self::SLEEP_TIME_IN_SECONDS);
+        $this->assertSame(
+            $expected->getTimestamp(),
+            DateTime::newImmutablePhpDateTime(
+                'now',
+                new \DateTimeZone('America/Montevideo')
+            )->getTimestamp()
         );
     }
 
