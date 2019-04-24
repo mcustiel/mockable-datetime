@@ -10,6 +10,10 @@
 			<directory suffix=".php">../src</directory>
 		</whitelist>
 	</filter>
+	<logging>
+            <log type="coverage-clover" target="build/coverage.xml"/>
+        </logging>
+
 	<php>
 		<ini name="display_startup_errors" value="1" />
 		<ini name="display_errors" value="1" />
