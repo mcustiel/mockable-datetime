@@ -81,7 +81,7 @@ class DateTime
      * @param string        $time
      * @param \DateTimeZone $timeZone
      *
-     * @return \DateTime
+     * @return \DateTimeImmutable
      */
     public static function newImmutablePhpDateTime($time = 'now', \DateTimeZone $timeZone = null)
     {
@@ -128,7 +128,7 @@ class DateTime
      *
      * @throws \Exception
      *
-     * @return \DateTime
+     * @return \DateTimeImmutable
      */
     private static function getFixedImmutableTimeFromConfiguredTimestamp($time, $timeZone = null)
     {
