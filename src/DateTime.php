@@ -112,11 +112,16 @@ class DateTime
     private static function getFixedTimeFromConfiguredTimestamp($time, $timeZone = null)
     {
         $date = new \DateTime(sprintf('@%d', self::$timestamp));
+
         if ('now' !== $time) {
-            $date->modify($time);
+            $date = $date->modify($time);
         }
         if (null !== $timeZone) {
-            $date->setTimezone($timeZone);
+            $date = $date->setTimezone($timeZone);
+        }
+
+        if (false === $date) {
+            throw new \RuntimeException('An error happened creating the immutable date');
         }
 
         return $date;
@@ -138,6 +143,10 @@ class DateTime
         }
         if (null !== $timeZone) {
             $date = $date->setTimezone($timeZone);
+        }
+
+        if (false === $date) {
+            throw new \RuntimeException('An error happened creating the immutable date');
         }
 
         return $date;
