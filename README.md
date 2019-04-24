@@ -8,6 +8,9 @@ Mockable DateTime is a library written in PHP that allows developers to mock the
 There are sometimes in which you need to verify that an action was executed with certain parameters, and one of them is a date or a time (generally obtained with date() or time() built-in functions) and is very difficult to ensure it will have a certain value at the time of the verification. 
 Mockable DateTime solves this problem by giving the developer a way to obtain PHP's built-in DateTime class in a way, that the value it returns can be mocked from unit tests without the need of injecting DateTime as a dependency.
 
+
+[![Build Status](https://scrutinizer-ci.com/g/mcustiel/mockable-datetime/badges/build.png?b=master)](https://scrutinizer-ci.com/g/mcustiel/mockable-datetime/build-status/master) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/mcustiel/mockable-datetime/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/mcustiel/mockable-datetime/?branch=master) [![Code Coverage](https://scrutinizer-ci.com/g/mcustiel/mockable-datetime/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/mcustiel/mockable-datetime/?branch=master)
+
 Installation
 ------------
 
